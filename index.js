@@ -23,6 +23,7 @@ function encodeSync(_audioData, opts) {
   /** @type {ReturnType<typeof createWriter>} */
   var writer = createWriter(dataView);
 
+  /** @type {import("./index.d.ts").Format} */
   var format = {
     formatId: floatingPoint ? 0x0003 : 0x0001,
     floatingPoint: floatingPoint,
@@ -80,7 +81,7 @@ function toAudioData(data) {
 
 /**
  * @param {ReturnType<typeof createWriter>} writer
- * @param format
+ * @param {import("./index.d.ts").Format} format
  * @param {number} length
  * @returns {void}
  */
@@ -103,7 +104,7 @@ function writeHeader(writer, format, length) {
 
 /**
  * @param {ReturnType<typeof createWriter>} writer
- * @param format
+ * @param {import("./index.d.ts").Format} format
  * @param {number} length
  * @param {import("./index.d.ts").AudioData} audioData
  * @param {import("./index.d.ts").Options} opts

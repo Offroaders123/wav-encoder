@@ -12,6 +12,14 @@ declare namespace WavEncoder {
     float?: boolean;
     symmetric?: boolean;
   }
+
+  interface Format {
+    formatId: number;
+    floatingPoint: boolean;
+    numberOfChannels: number;
+    sampleRate: number;
+    bitDepth: number;
+  }
 }
 
 declare const WavEncoder: {
