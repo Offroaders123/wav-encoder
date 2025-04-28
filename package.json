@@ -6,10 +6,11 @@
   "bugs": {
     "url": "https://github.com/mohayonao/wav-encoder/issues"
   },
-  "dependencies": {},
   "devDependencies": {
+    "@types/node": "^22.15.2",
     "eslint": "^4.4.1",
-    "mocha": "^3.5.0"
+    "mocha": "^3.5.0",
+    "typescript": "^5.8.3"
   },
   "files": [
     "package.json",
