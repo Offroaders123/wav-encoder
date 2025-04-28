@@ -1,14 +1,15 @@
 "use strict";
 
 /**
- * @param {import("./index.d.ts").AudioData} audioData
+ * @param {import("./index.d.ts").AudioData} _audioData
  * @param {import("./index.d.ts").Options} [opts]
  * @returns {ArrayBuffer}
  */
-function encodeSync(audioData, opts) {
+function encodeSync(_audioData, opts) {
   opts = opts || {};
 
-  audioData = toAudioData(audioData);
+  /** @type {import("./index.d.ts").AudioData | null} */
+  var audioData = toAudioData(_audioData);
 
   if (audioData === null) {
     throw new TypeError("Invalid AudioData");
@@ -161,13 +162,13 @@ function createWriter(dataView) {
       value = Math.max(-1, Math.min(value, +1));
       value = (value * 0.5 + 0.5) * 255;
       value = Math.round(value)|0;
-      dataView.setUint8(pos, value, true);
+      dataView.setUint8(pos, value);
       pos += 1;
     },
     pcm8s: function(/** @type {number} */ value) {
       value = Math.round(value * 128) + 128;
       value = Math.max(0, Math.min(value, 255));
-      dataView.setUint8(pos, value, true);
+      dataView.setUint8(pos, value);
       pos += 1;
     },
     pcm16: function(/** @type {number} */ value) {
@@ -230,5 +231,6 @@ function createWriter(dataView) {
   };
 }
 
+encode.sync = encodeSync;
 module.exports.encode = encode;
 module.exports.encode.sync = encodeSync;
