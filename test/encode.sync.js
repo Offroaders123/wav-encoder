@@ -32,7 +32,7 @@ function readAudioData(filename) {
   const numberOfChannels = uint32[0];
   const length = uint32[1];
   const sampleRate = uint32[2];
-  const channelData = new Array(numberOfChannels).fill().map((_, ch) => {
+  const channelData = /** @type {void[]} */ (new Array(numberOfChannels)).fill().map((_, ch) => {
     return float32.subarray(ch * length, (ch + 1) * length);
   });
 
@@ -47,7 +47,7 @@ function readAudioData(filename) {
 describe("encode.sync(audioData, opts)", () => {
   const audioData = readAudioData("amen.dat");
 
-  testSpec.forEach(({ opts, delta, filename }) => {
+  testSpec.forEach(({ opts, filename }) => {
     it(filename, () => {
       const expected = new Uint8Array(readFile(filename));
       const actual = new Uint8Array(encoder.encode.sync(audioData, opts));
