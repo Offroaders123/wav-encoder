@@ -11,10 +11,18 @@ const testSpec = [
   { opts: { float:  true }, filename: "amen_pcm32f.wav" }
 ];
 
+/**
+ * @param {string} filename
+ * @returns {Buffer}
+ */
 function readFile(filename) {
   return fs.readFileSync(path.join(__dirname, "fixtures", filename));
 }
 
+/**
+ * @param {string} filename
+ * @returns {import("..").AudioData}
+ */
 function readAudioData(filename) {
   const buffer = readFile(filename).buffer;
 
