@@ -16,7 +16,7 @@ function encodeSync(_audioData, opts) {
   }
 
   var floatingPoint = !!(opts.floatingPoint || opts.float);
-  var bitDepth = floatingPoint ? 32 : ((opts.bitDepth|0) || 16);
+  var bitDepth = floatingPoint ? 32 : ((/** @type {typeof NaN} */ (opts.bitDepth)|0) || 16);
   var bytes = bitDepth >> 3;
   var length = audioData.length * audioData.numberOfChannels * bytes;
   var dataView = new DataView(new Uint8Array(44 + length).buffer);
