@@ -105,7 +105,7 @@ function writeHeader(writer, format, length) {
  * @param format
  * @param {number} length
  * @param {import("./index.d.ts").AudioData} audioData
- * @param {import("./index.d.ts").Options} [opts]
+ * @param {import("./index.d.ts").Options} opts
  * @returns {TypeError | undefined}
  */
 function writeData(writer, format, length, audioData, opts) {

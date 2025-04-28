@@ -1,13 +1,16 @@
 declare namespace WavEncoder {
   interface AudioData {
+    numberOfChannels: number;
+    length: number;
     sampleRate: number;
     channelData: Float32Array[];
   }
 
   interface Options {
-    bitDepth: number;
-    float: boolean;
-    symmetric: boolean;
+    bitDepth?: number;
+    floatingPoint?: boolean;
+    float?: boolean;
+    symmetric?: boolean;
   }
 }
 

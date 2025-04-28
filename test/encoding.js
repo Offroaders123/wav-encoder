@@ -49,6 +49,7 @@ const testSpec = [
 describe("encoding", () => {
   testSpec.forEach(({ opts, TypedArray, data, expected }) => {
     it(JSON.stringify(opts), () => {
+      /** @type {import("..").AudioData} */
       const audioData = {
         channelData: [ new Float32Array(data) ], sampleRate: 8000,
       };
