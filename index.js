@@ -112,9 +112,10 @@ function writeHeader(writer, format, length) {
  */
 function writeData(writer, format, length, audioData, opts) {
   var bitDepth = format.bitDepth;
+  /** @type {"" | "f" | "s"} */
   var encoderOption = format.floatingPoint ? "f" : opts.symmetric ? "s" : "";
   /** @type {keyof ReturnType<typeof createWriter> extends infer T ? T extends `pcm${number}${string}` ? T : never : never} */
-  var methodName = "pcm" + bitDepth + encoderOption;
+  var methodName = `pcm${bitDepth}${encoderOption}`;
 
   if (!writer[methodName]) {
     return new TypeError("Not supported bit depth: " + bitDepth);
