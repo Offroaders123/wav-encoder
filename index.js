@@ -114,7 +114,7 @@ function writeData(writer, format, length, audioData, opts) {
   var bitDepth = format.bitDepth;
   /** @type {"" | "f" | "s"} */
   var encoderOption = format.floatingPoint ? "f" : opts.symmetric ? "s" : "";
-  /** @type {keyof ReturnType<typeof createWriter> extends infer T ? T extends `pcm${number}${string}` ? T : never : never} */
+  /** @type {import("./index.d.ts").WriterMethod} */
   var methodName = `pcm${bitDepth}${encoderOption}`;
 
   if (!writer[methodName]) {

@@ -20,6 +20,8 @@ declare namespace WavEncoder {
     sampleRate: number;
     bitDepth: number;
   }
+
+  type WriterMethod = "pcm8" | "pcm8s" | "pcm16" | "pcm16s" | "pcm24" | "pcm24s" | "pcm32" | "pcm32s" | "pcm32f";
 }
 
 declare const WavEncoder: {
