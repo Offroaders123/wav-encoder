@@ -26,31 +26,23 @@ export type BitDepth = 8 | 16 | 24 | 32;
 
 export type WriterMethod = "pcm8" | "pcm8s" | "pcm16" | "pcm16s" | "pcm24" | "pcm24s" | "pcm32" | "pcm32s" | "pcm32f";
 
-/**
- * @param {import("./index.d.ts").AudioData} _audioData
- * @param {import("./index.d.ts").Options} [opts]
- * @returns {ArrayBuffer}
- */
-function encodeSync(_audioData, opts) {
+function encodeSync(_audioData: AudioData, opts?: Options): ArrayBuffer {
   opts = opts || {};
 
-  /** @type {Required<import("./index.d.ts").AudioData> | null} */
-  var audioData = toAudioData(_audioData);
+  var audioData: Required<AudioData> | null = toAudioData(_audioData);
 
   if (audioData === null) {
     throw new TypeError("Invalid AudioData");
   }
 
   var floatingPoint = !!(opts.floatingPoint || opts.float);
-  var bitDepth = floatingPoint ? 32 : /** @type {import("./index.d.ts").BitDepth} */ ((/** @type {typeof NaN} */ (opts.bitDepth)|0) || 16);
+  var bitDepth: BitDepth = floatingPoint ? 32 : /** @type {BitDepth} */ ((/** @type {typeof NaN} */ (opts.bitDepth)|0) || 16);
   var bytes = bitDepth >> 3;
   var length = audioData.length * audioData.numberOfChannels * bytes;
   var dataView = new DataView(new Uint8Array(44 + length).buffer);
-  /** @type {ReturnType<typeof createWriter>} */
-  var writer = createWriter(dataView);
+  var writer: ReturnType<typeof createWriter> = createWriter(dataView);
 
-  /** @type {import("./index.d.ts").Format} */
-  var format = {
+  var format: Format = {
     formatId: floatingPoint ? 0x0003 : 0x0001,
     floatingPoint: floatingPoint,
     numberOfChannels: audioData.numberOfChannels,
@@ -69,23 +61,14 @@ function encodeSync(_audioData, opts) {
   return dataView.buffer;
 }
 
-/**
- * @param {import("./index.d.ts").AudioData} audioData
- * @param {import("./index.d.ts").Options} [opts]
- * @returns {Promise<ArrayBuffer>}
- */
-function encode(audioData, opts) {
+function encode(audioData: AudioData, opts?: Options): Promise<ArrayBuffer> {
   return new Promise(function(resolve) {
     resolve(encodeSync(audioData, opts));
   });
 }
 
-/**
- * @param {import("./index.d.ts").AudioData} data
- * @returns {Required<import("./index.d.ts").AudioData> | null}
- */
-function toAudioData(data) {
-  var audioData = {};
+function toAudioData(data: AudioData): Required<AudioData> | null {
+  var audioData: Required<AudioData> = {};
 
   if (typeof data.sampleRate !== "number") {
     return null;
@@ -105,13 +88,7 @@ function toAudioData(data) {
   return audioData;
 }
 
-/**
- * @param {ReturnType<typeof createWriter>} writer
- * @param {import("./index.d.ts").Format} format
- * @param {number} length
- * @returns {void}
- */
-function writeHeader(writer, format, length) {
+function writeHeader(writer: ReturnType<typeof createWriter>, format: Format, length: number): void {
   var bytes = format.bitDepth >> 3;
 
   writer.string("RIFF");
@@ -128,27 +105,16 @@ function writeHeader(writer, format, length) {
   writer.uint16(format.bitDepth);
 }
 
-/**
- * @param {ReturnType<typeof createWriter>} writer
- * @param {import("./index.d.ts").Format} format
- * @param {number} length
- * @param {Required<import("./index.d.ts").AudioData>} audioData
- * @param {import("./index.d.ts").Options} opts
- * @returns {TypeError | undefined}
- */
-function writeData(writer, format, length, audioData, opts) {
+function writeData(writer: ReturnType<typeof createWriter>, format: Format, length: number, audioData: Required<AudioData>, opts: Options): TypeError | undefined {
   var bitDepth = format.bitDepth;
-  /** @type {"" | "f" | "s"} */
-  var encoderOption = format.floatingPoint ? "f" : opts.symmetric ? "s" : "";
-  /** @type {import("./index.d.ts").WriterMethod} */
-  var methodName = /** @type {import("./index.d.ts").WriterMethod} */ (`pcm${bitDepth}${encoderOption}`);
+  var encoderOption: "" | "f" | "s" = format.floatingPoint ? "f" : opts.symmetric ? "s" : "";
+  var methodName: WriterMethod = /** @type {WriterMethod} */ (`pcm${bitDepth}${encoderOption}`);
 
   if (!writer[methodName]) {
     return new TypeError("Not supported bit depth: " + bitDepth);
   }
 
-  /** @type {(value: number) => void} */
-  var write = writer[methodName].bind(writer);
+  var write: (value: number) => void = writer[methodName].bind(writer);
   var numberOfChannels = format.numberOfChannels;
   var channelData = audioData.channelData;
 
@@ -162,57 +128,54 @@ function writeData(writer, format, length, audioData, opts) {
   }
 }
 
-/**
- * @param {DataView<ArrayBuffer>} dataView
- */
-function createWriter(dataView) {
+function createWriter(dataView: DataView<ArrayBuffer>) {
   var pos = 0;
 
   return {
-    int16: function(/** @type {number} */ value) {
+    int16: function(value: number) {
       dataView.setInt16(pos, value, true);
       pos += 2;
     },
-    uint16: function(/** @type {number} */ value) {
+    uint16: function(value: number) {
       dataView.setUint16(pos, value, true);
       pos += 2;
     },
-    uint32: function(/** @type {number} */ value) {
+    uint32: function(value: number) {
       dataView.setUint32(pos, value, true);
       pos += 4;
     },
-    string: function(/** @type {string} */ value) {
+    string: function(value: string) {
       for (var i = 0, imax = value.length; i < imax; i++) {
         dataView.setUint8(pos++, value.charCodeAt(i));
       }
     },
-    pcm8: function(/** @type {number} */ value) {
+    pcm8: function(value: number) {
       value = Math.max(-1, Math.min(value, +1));
       value = (value * 0.5 + 0.5) * 255;
       value = Math.round(value)|0;
       dataView.setUint8(pos, value);
       pos += 1;
     },
-    pcm8s: function(/** @type {number} */ value) {
+    pcm8s: function(value: number) {
       value = Math.round(value * 128) + 128;
       value = Math.max(0, Math.min(value, 255));
       dataView.setUint8(pos, value);
       pos += 1;
     },
-    pcm16: function(/** @type {number} */ value) {
+    pcm16: function(value: number) {
       value = Math.max(-1, Math.min(value, +1));
       value = value < 0 ? value * 32768 : value * 32767;
       value = Math.round(value)|0;
       dataView.setInt16(pos, value, true);
       pos += 2;
     },
-    pcm16s: function(/** @type {number} */ value) {
+    pcm16s: function(value: number) {
       value = Math.round(value * 32768);
       value = Math.max(-32768, Math.min(value, 32767));
       dataView.setInt16(pos, value, true);
       pos += 2;
     },
-    pcm24: function(/** @type {number} */ value) {
+    pcm24: function(value: number) {
       value = Math.max(-1, Math.min(value, +1));
       value = value < 0 ? 0x1000000 + value * 8388608 : value * 8388607;
       value = Math.round(value)|0;
@@ -226,7 +189,7 @@ function createWriter(dataView) {
       dataView.setUint8(pos + 2, x2);
       pos += 3;
     },
-    pcm24s: function(/** @type {number} */ value) {
+    pcm24s: function(value: number) {
       value = Math.round(value * 8388608);
       value = Math.max(-8388608, Math.min(value, 8388607));
 
@@ -239,20 +202,20 @@ function createWriter(dataView) {
       dataView.setUint8(pos + 2, x2);
       pos += 3;
     },
-    pcm32: function(/** @type {number} */ value) {
+    pcm32: function(value: number) {
       value = Math.max(-1, Math.min(value, +1));
       value = value < 0 ? value * 2147483648 : value * 2147483647;
       value = Math.round(value)|0;
       dataView.setInt32(pos, value, true);
       pos += 4;
     },
-    pcm32s: function(/** @type {number} */ value) {
+    pcm32s: function(value: number) {
       value = Math.round(value * 2147483648);
       value = Math.max(-2147483648, Math.min(value, +2147483647));
       dataView.setInt32(pos, value, true);
       pos += 4;
     },
-    pcm32f: function(/** @type {number} */ value) {
+    pcm32f: function(value: number) {
       dataView.setFloat32(pos, value, true);
       pos += 4;
     }
