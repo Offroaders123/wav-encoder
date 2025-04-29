@@ -1,5 +1,31 @@
 "use strict";
 
+export interface AudioData {
+  numberOfChannels?: number;
+  length?: number;
+  sampleRate: number;
+  channelData: Float32Array[];
+}
+
+export interface Options {
+  bitDepth?: number;
+  floatingPoint?: boolean;
+  float?: boolean;
+  symmetric?: boolean;
+}
+
+export interface Format {
+  formatId: number;
+  floatingPoint: boolean;
+  numberOfChannels: number;
+  sampleRate: number;
+  bitDepth: BitDepth;
+}
+
+export type BitDepth = 8 | 16 | 24 | 32;
+
+export type WriterMethod = "pcm8" | "pcm8s" | "pcm16" | "pcm16s" | "pcm24" | "pcm24s" | "pcm32" | "pcm32s" | "pcm32f";
+
 /**
  * @param {import("./index.d.ts").AudioData} _audioData
  * @param {import("./index.d.ts").Options} [opts]
