@@ -8,7 +8,7 @@
 function encodeSync(_audioData, opts) {
   opts = opts || {};
 
-  /** @type {import("./index.d.ts").AudioData | null} */
+  /** @type {Required<import("./index.d.ts").AudioData> | null} */
   var audioData = toAudioData(_audioData);
 
   if (audioData === null) {
@@ -56,7 +56,7 @@ function encode(audioData, opts) {
 
 /**
  * @param {import("./index.d.ts").AudioData} data
- * @returns {import("./index.d.ts").AudioData | null}
+ * @returns {Required<import("./index.d.ts").AudioData> | null}
  */
 function toAudioData(data) {
   var audioData = {};
@@ -106,7 +106,7 @@ function writeHeader(writer, format, length) {
  * @param {ReturnType<typeof createWriter>} writer
  * @param {import("./index.d.ts").Format} format
  * @param {number} length
- * @param {import("./index.d.ts").AudioData} audioData
+ * @param {Required<import("./index.d.ts").AudioData>} audioData
  * @param {import("./index.d.ts").Options} opts
  * @returns {TypeError | undefined}
  */

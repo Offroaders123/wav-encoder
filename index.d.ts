@@ -1,7 +1,7 @@
 declare namespace WavEncoder {
   interface AudioData {
-    numberOfChannels: number;
-    length: number;
+    numberOfChannels?: number;
+    length?: number;
     sampleRate: number;
     channelData: Float32Array[];
   }
