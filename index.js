@@ -115,7 +115,7 @@ function writeData(writer, format, length, audioData, opts) {
   /** @type {"" | "f" | "s"} */
   var encoderOption = format.floatingPoint ? "f" : opts.symmetric ? "s" : "";
   /** @type {import("./index.d.ts").WriterMethod} */
-  var methodName = `pcm${bitDepth}${encoderOption}`;
+  var methodName = /** @type {import("./index.d.ts").WriterMethod} */ (`pcm${bitDepth}${encoderOption}`);
 
   if (!writer[methodName]) {
     return new TypeError("Not supported bit depth: " + bitDepth);
