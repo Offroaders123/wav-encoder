@@ -18,7 +18,7 @@ declare namespace WavEncoder {
     floatingPoint: boolean;
     numberOfChannels: number;
     sampleRate: number;
-    bitDepth: number;
+    bitDepth: BitDepth;
   }
 
   type BitDepth = 8 | 16 | 24 | 32;

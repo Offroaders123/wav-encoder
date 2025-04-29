@@ -16,7 +16,7 @@ function encodeSync(_audioData, opts) {
   }
 
   var floatingPoint = !!(opts.floatingPoint || opts.float);
-  var bitDepth = floatingPoint ? 32 : ((/** @type {typeof NaN} */ (opts.bitDepth)|0) || 16);
+  var bitDepth = floatingPoint ? 32 : /** @type {import("./index.d.ts").BitDepth} */ ((/** @type {typeof NaN} */ (opts.bitDepth)|0) || 16);
   var bytes = bitDepth >> 3;
   var length = audioData.length * audioData.numberOfChannels * bytes;
   var dataView = new DataView(new Uint8Array(44 + length).buffer);
@@ -111,7 +111,6 @@ function writeHeader(writer, format, length) {
  * @returns {TypeError | undefined}
  */
 function writeData(writer, format, length, audioData, opts) {
-  /** @type {import("./index.d.ts").BitDepth} */
   var bitDepth = format.bitDepth;
   /** @type {"" | "f" | "s"} */
   var encoderOption = format.floatingPoint ? "f" : opts.symmetric ? "s" : "";
