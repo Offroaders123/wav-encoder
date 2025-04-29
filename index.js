@@ -111,6 +111,7 @@ function writeHeader(writer, format, length) {
  * @returns {TypeError | undefined}
  */
 function writeData(writer, format, length, audioData, opts) {
+  /** @type {8 | 16 | 24 | 32} */
   var bitDepth = format.bitDepth;
   /** @type {"" | "f" | "s"} */
   var encoderOption = format.floatingPoint ? "f" : opts.symmetric ? "s" : "";
