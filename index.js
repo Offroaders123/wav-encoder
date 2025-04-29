@@ -131,7 +131,7 @@ function writeData(writer, format, length, audioData, opts) {
 
   for (var i = 0, imax = audioData.length; i < imax; i++) {
     for (var ch = 0; ch < numberOfChannels; ch++) {
-      write(channelData[ch][i]);
+      write(/** @type {number} */ (/** @type {Float32Array} */ (channelData[ch])[i]));
     }
   }
 }

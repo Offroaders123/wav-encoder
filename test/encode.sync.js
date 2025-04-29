@@ -30,8 +30,10 @@ function readAudioData(filename) {
   const float32 = new Float32Array(buffer, 16);
 
   const numberOfChannels = uint32[0];
-  const length = uint32[1];
-  const sampleRate = uint32[2];
+  /** @type {number} */
+  const length = /** @type {number} */ (uint32[1]);
+  /** @type {number} */
+  const sampleRate = /** @type {number} */ (uint32[2]);
   const channelData = /** @type {void[]} */ (new Array(numberOfChannels)).fill().map((_, ch) => {
     return float32.subarray(ch * length, (ch + 1) * length);
   });
