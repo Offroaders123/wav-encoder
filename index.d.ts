@@ -21,6 +21,8 @@ declare namespace WavEncoder {
     bitDepth: number;
   }
 
+  type BitDepth = 8 | 16 | 24 | 32;
+
   type WriterMethod = "pcm8" | "pcm8s" | "pcm16" | "pcm16s" | "pcm24" | "pcm24s" | "pcm32" | "pcm32s" | "pcm32f";
 }
 
