@@ -17,5 +17,8 @@
     "noUnusedLocals": true,
     "allowUnusedLabels": false,
     "noUnusedParameters": true
-  }
+  },
+  "exclude": [
+    "./dist"
+  ]
 }
