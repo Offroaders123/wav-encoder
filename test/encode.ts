@@ -13,7 +13,7 @@ const testSpec = [
 ];
 
 function readFile(filename: string): Buffer {
-  return fs.readFileSync(path.join(__dirname, "fixtures", filename));
+  return fs.readFileSync(path.join(import.meta.dirname, "fixtures", filename));
 }
 
 function readAudioData(filename: string): encoder.AudioData {

@@ -1,5 +1,3 @@
-"use strict";
-
 export interface AudioData {
   numberOfChannels?: number;
   length?: number;
