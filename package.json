@@ -15,7 +15,9 @@
   "files": [
     "package.json",
     "README.md",
-    "dist/index.js"
+    "dist/index.js",
+    "dist/index.d.ts",
+    "dist/index.js.map"
   ],
   "homepage": "https://github.com/mohayonao/wav-encoder/",
   "keywords": [
@@ -25,11 +27,14 @@
   ],
   "license": "MIT",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/mohayonao/wav-encoder.git"
   },
   "scripts": {
+    "build": "tsc --project ./tsconfig.build.json",
+    "dev": "tsc --watch",
     "lint": "eslint dist/index.js",
     "postversion": "git push && git push --tags",
     "prepublish": "npm run lint && npm run test",
