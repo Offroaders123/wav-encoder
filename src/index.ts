@@ -223,5 +223,4 @@ function createWriter(dataView: DataView<ArrayBuffer>) {
 }
 
 encode.sync = encodeSync;
-module.exports.encode = encode;
-module.exports.encode.sync = encodeSync;
+export { encode };
