@@ -53,7 +53,7 @@ describe("encoding", () => {
       const audioData: AudioData = {
         channelData: [ new Float32Array(data) ], sampleRate: 8000,
       };
-      const encoded = encodeSync(audioData, opts);
+      const encoded: ArrayBuffer = encodeSync(audioData, opts);
       const actual = new TypedArray(encoded, 44);
 
       deepEqual(actual, expected);

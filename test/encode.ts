@@ -2,9 +2,9 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { deepEqual } from "node:assert";
 import { describe, it } from "node:test";
-import { type AudioData, encode, encodeSync } from "../src/index.js";
+import { type AudioData, encode, encodeSync, type Options } from "../src/index.js";
 
-const testSpec = [
+const testSpec: { opts: Options; filename: string; }[] = [
   { opts: { bitDepth:  8 }, filename: "amen_pcm8.wav" },
   { opts: { bitDepth: 16 }, filename: "amen_pcm16.wav" },
   { opts: { bitDepth: 24 }, filename: "amen_pcm24.wav" },
@@ -17,15 +17,15 @@ function readFile(filename: string): Buffer {
 }
 
 function readAudioData(filename: string): AudioData {
-  const buffer = readFile(filename).buffer;
+  const buffer: ArrayBufferLike = readFile(filename).buffer;
 
-  const uint32 = new Uint32Array(buffer, 4);
-  const float32 = new Float32Array(buffer, 16);
+  const uint32: Uint32Array = new Uint32Array(buffer, 4);
+  const float32: Float32Array = new Float32Array(buffer, 16);
 
-  const numberOfChannels = uint32[0];
+  const numberOfChannels: number | undefined = uint32[0];
   const length: number = uint32[1]!;
   const sampleRate: number = uint32[2]!;
-  const channelData = (new Array(numberOfChannels) as void[]).fill().map((_, ch) => {
+  const channelData: Float32Array[] = (new Array(numberOfChannels) as void[]).fill().map((_, ch) => {
     return float32.subarray(ch * length, (ch + 1) * length);
   });
 
@@ -38,14 +38,14 @@ function readAudioData(filename: string): AudioData {
 }
 
 describe("encode(audioData, opts)", () => {
-  const audioData = readAudioData("amen.dat");
+  const audioData: AudioData = readAudioData("amen.dat");
 
   testSpec.forEach(({ opts, filename }) => {
     it(filename, () => {
-      const expected = new Uint8Array(encodeSync(audioData, opts));
+      const expected: Uint8Array<ArrayBuffer> = new Uint8Array(encodeSync(audioData, opts));
 
       return encode(audioData, opts).then((_actual) => {
-        const actual = new Uint8Array(_actual);
+        const actual: Uint8Array<ArrayBuffer> = new Uint8Array(_actual);
 
         deepEqual(actual, expected);
       });
