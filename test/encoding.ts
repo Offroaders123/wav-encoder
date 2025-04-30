@@ -1,6 +1,6 @@
-import * as assert from "assert";
+import { deepEqual } from "node:assert";
 import { describe, it } from "node:test";
-import * as encoder from "../src/index.js";
+import { type AudioData, encode } from "../src/index.js";
 
 const testSpec = [
   {
@@ -50,13 +50,13 @@ const testSpec = [
 describe("encoding", () => {
   testSpec.forEach(({ opts, TypedArray, data, expected }) => {
     it(JSON.stringify(opts), () => {
-      const audioData: encoder.AudioData = {
+      const audioData: AudioData = {
         channelData: [ new Float32Array(data) ], sampleRate: 8000,
       };
-      const encoded = encoder.encode.sync(audioData, opts);
+      const encoded = encode.sync(audioData, opts);
       const actual = new TypedArray(encoded, 44);
 
-      assert.deepEqual(actual, expected);
+      deepEqual(actual, expected);
     });
   });
 });
