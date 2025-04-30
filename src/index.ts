@@ -6,7 +6,7 @@ export interface AudioData {
 }
 
 export interface Options {
-  bitDepth?: number;
+  bitDepth?: BitDepth;
   floatingPoint?: boolean;
   float?: boolean;
   symmetric?: boolean;
