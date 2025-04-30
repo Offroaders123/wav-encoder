@@ -24,7 +24,7 @@ export type BitDepth = 8 | 16 | 24 | 32;
 
 export type WriterMethod = "pcm8" | "pcm8s" | "pcm16" | "pcm16s" | "pcm24" | "pcm24s" | "pcm32" | "pcm32s" | "pcm32f";
 
-function encodeSync(_audioData: AudioData, opts?: Options): ArrayBuffer {
+export function encodeSync(_audioData: AudioData, opts?: Options): ArrayBuffer {
   opts = opts || {};
 
   var audioData: Required<AudioData> | null = toAudioData(_audioData);
@@ -59,7 +59,7 @@ function encodeSync(_audioData: AudioData, opts?: Options): ArrayBuffer {
   return dataView.buffer;
 }
 
-function encode(audioData: AudioData, opts?: Options): Promise<ArrayBuffer> {
+export function encode(audioData: AudioData, opts?: Options): Promise<ArrayBuffer> {
   return new Promise(function(resolve) {
     resolve(encodeSync(audioData, opts));
   });
@@ -219,6 +219,3 @@ function createWriter(dataView: DataView<ArrayBuffer>) {
     }
   };
 }
-
-encode.sync = encodeSync;
-export { encode };

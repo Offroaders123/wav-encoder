@@ -1,6 +1,6 @@
 import { deepEqual } from "node:assert";
 import { describe, it } from "node:test";
-import { type AudioData, encode } from "../src/index.js";
+import { type AudioData, encodeSync } from "../src/index.js";
 
 const testSpec = [
   {
@@ -53,7 +53,7 @@ describe("encoding", () => {
       const audioData: AudioData = {
         channelData: [ new Float32Array(data) ], sampleRate: 8000,
       };
-      const encoded = encode.sync(audioData, opts);
+      const encoded = encodeSync(audioData, opts);
       const actual = new TypedArray(encoded, 44);
 
       deepEqual(actual, expected);

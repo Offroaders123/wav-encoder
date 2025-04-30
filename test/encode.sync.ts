@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { deepEqual } from "node:assert";
 import { describe, it } from "node:test";
-import { type AudioData, encode } from "../src/index.js";
+import { type AudioData, encodeSync } from "../src/index.js";
 
 const testSpec = [
   { opts: { bitDepth:  8 }, filename: "amen_pcm8.wav" },
@@ -43,7 +43,7 @@ describe("encode.sync(audioData, opts)", () => {
   testSpec.forEach(({ opts, filename }) => {
     it(filename, () => {
       const expected = new Uint8Array(readFile(filename));
-      const actual = new Uint8Array(encode.sync(audioData, opts));
+      const actual = new Uint8Array(encodeSync(audioData, opts));
 
       deepEqual(actual, expected);
     });
