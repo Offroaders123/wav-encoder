@@ -1,6 +1,6 @@
-const assert = require("assert");
-const { describe, it } = require("node:test");
-const encoder = require("..");
+import * as assert from "assert";
+import { describe, it } from "node:test";
+import * as encoder from "..";
 
 const testSpec = [
   {
@@ -50,8 +50,7 @@ const testSpec = [
 describe("encoding", () => {
   testSpec.forEach(({ opts, TypedArray, data, expected }) => {
     it(JSON.stringify(opts), () => {
-      /** @type {import("..").AudioData} */
-      const audioData = {
+      const audioData: encoder.AudioData = {
         channelData: [ new Float32Array(data) ], sampleRate: 8000,
       };
       const encoded = encoder.encode.sync(audioData, opts);

@@ -1,8 +1,8 @@
-const fs = require("fs");
-const path = require("path");
-const assert = require("assert");
-const { describe, it } = require("node:test");
-const encoder = require("..");
+import * as fs from "fs";
+import * as path from "path";
+import * as assert from "assert";
+import { describe, it } from "node:test";
+import * as encoder from "..";
 
 const testSpec = [
   { opts: { bitDepth:  8 }, filename: "amen_pcm8.wav" },
@@ -12,29 +12,19 @@ const testSpec = [
   { opts: { float:  true }, filename: "amen_pcm32f.wav" }
 ];
 
-/**
- * @param {string} filename
- * @returns {Buffer}
- */
-function readFile(filename) {
+function readFile(filename: string): Buffer {
   return fs.readFileSync(path.join(__dirname, "fixtures", filename));
 }
 
-/**
- * @param {string} filename
- * @returns {import("..").AudioData}
- */
-function readAudioData(filename) {
+function readAudioData(filename: string): encoder.AudioData {
   const buffer = readFile(filename).buffer;
 
   const uint32 = new Uint32Array(buffer, 4);
   const float32 = new Float32Array(buffer, 16);
 
   const numberOfChannels = uint32[0];
-  /** @type {number} */
-  const length = /** @type {number} */ (uint32[1]);
-  /** @type {number} */
-  const sampleRate = /** @type {number} */ (uint32[2]);
+  const length: number = /** @type {number} */ (uint32[1]);
+  const sampleRate: number = /** @type {number} */ (uint32[2]);
   const channelData = /** @type {void[]} */ (new Array(numberOfChannels)).fill().map((_, ch) => {
     return float32.subarray(ch * length, (ch + 1) * length);
   });
