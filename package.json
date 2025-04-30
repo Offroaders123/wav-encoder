@@ -7,10 +7,8 @@
     "url": "https://github.com/mohayonao/wav-encoder/issues"
   },
   "devDependencies": {
-    "@types/mocha": "^10.0.10",
     "@types/node": "^22.15.2",
     "eslint": "^4.4.1",
-    "mocha": "^3.5.0",
     "typescript": "^5.8.3"
   },
   "files": [
@@ -35,7 +33,7 @@
     "postversion": "git push && git push --tags",
     "prepublish": "npm run lint && npm run test",
     "preversion": "npm run lint && npm run test",
-    "test": "mocha",
+    "test": "node --test",
     "travis": "npm run lint && npm run test"
   }
 }
