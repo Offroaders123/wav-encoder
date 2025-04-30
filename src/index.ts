@@ -36,7 +36,7 @@ function encodeSync(_audioData: AudioData, opts?: Options): ArrayBuffer {
   }
 
   var floatingPoint = !!(opts.floatingPoint || opts.float);
-  var bitDepth: BitDepth = floatingPoint ? 32 : /** @type {BitDepth} */ ((/** @type {typeof NaN} */ (opts.bitDepth)|0) || 16);
+  var bitDepth: BitDepth = floatingPoint ? 32 : ((opts.bitDepth as typeof NaN|0) || 16) as BitDepth;
   var bytes = bitDepth >> 3;
   var length = audioData.length * audioData.numberOfChannels * bytes;
   var dataView = new DataView(new Uint8Array(44 + length).buffer);
@@ -68,7 +68,7 @@ function encode(audioData: AudioData, opts?: Options): Promise<ArrayBuffer> {
 }
 
 function toAudioData(data: AudioData): Required<AudioData> | null {
-  var audioData: Required<AudioData> = {};
+  var audioData: Required<AudioData> = {} as Required<AudioData>;
 
   if (typeof data.sampleRate !== "number") {
     return null;
@@ -108,7 +108,7 @@ function writeHeader(writer: ReturnType<typeof createWriter>, format: Format, le
 function writeData(writer: ReturnType<typeof createWriter>, format: Format, length: number, audioData: Required<AudioData>, opts: Options): TypeError | undefined {
   var bitDepth = format.bitDepth;
   var encoderOption: "" | "f" | "s" = format.floatingPoint ? "f" : opts.symmetric ? "s" : "";
-  var methodName: WriterMethod = /** @type {WriterMethod} */ (`pcm${bitDepth}${encoderOption}`);
+  var methodName: WriterMethod = `pcm${bitDepth}${encoderOption}` as WriterMethod;
 
   if (!writer[methodName]) {
     return new TypeError("Not supported bit depth: " + bitDepth);
@@ -123,7 +123,7 @@ function writeData(writer: ReturnType<typeof createWriter>, format: Format, leng
 
   for (var i = 0, imax = audioData.length; i < imax; i++) {
     for (var ch = 0; ch < numberOfChannels; ch++) {
-      write(/** @type {number} */ (/** @type {Float32Array} */ (channelData[ch])[i]));
+      write(channelData[ch]![i]!);
     }
   }
 }
