@@ -23,9 +23,9 @@ function readAudioData(filename: string): encoder.AudioData {
   const float32 = new Float32Array(buffer, 16);
 
   const numberOfChannels = uint32[0];
-  const length: number = /** @type {number} */ (uint32[1]);
-  const sampleRate: number = /** @type {number} */ (uint32[2]);
-  const channelData = /** @type {void[]} */ (new Array(numberOfChannels)).fill().map((_, ch) => {
+  const length: number = uint32[1]!;
+  const sampleRate: number = uint32[2]!;
+  const channelData = (new Array(numberOfChannels) as void[]).fill().map((_, ch) => {
     return float32.subarray(ch * length, (ch + 1) * length);
   });
 
