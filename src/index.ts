@@ -59,12 +59,6 @@ export function encodeSync(_audioData: AudioData, opts?: Options): ArrayBuffer {
   return dataView.buffer;
 }
 
-export function encode(audioData: AudioData, opts?: Options): Promise<ArrayBuffer> {
-  return new Promise<ArrayBuffer>(function(resolve) {
-    resolve(encodeSync(audioData, opts));
-  });
-}
-
 function toAudioData(data: AudioData): Required<AudioData> | null {
   var audioData: Required<AudioData> = {} as Required<AudioData>;
 
