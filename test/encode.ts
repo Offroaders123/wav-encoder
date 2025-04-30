@@ -22,7 +22,7 @@ function readAudioData(filename: string): AudioData {
   const uint32: Uint32Array = new Uint32Array(buffer, 4);
   const float32: Float32Array = new Float32Array(buffer, 16);
 
-  const numberOfChannels: number | undefined = uint32[0];
+  const numberOfChannels: number = uint32[0]!;
   const length: number = uint32[1]!;
   const sampleRate: number = uint32[2]!;
   const channelData: Float32Array[] = (new Array(numberOfChannels) as void[]).fill().map((_, ch) => {
