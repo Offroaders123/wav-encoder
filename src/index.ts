@@ -33,11 +33,11 @@ export function encodeSync(_audioData: AudioData, opts?: Options): ArrayBuffer {
     throw new TypeError("Invalid AudioData");
   }
 
-  var floatingPoint = !!(opts.floatingPoint || opts.float);
+  var floatingPoint: boolean = !!(opts.floatingPoint || opts.float);
   var bitDepth: BitDepth = floatingPoint ? 32 : ((opts.bitDepth as typeof NaN|0) || 16) as BitDepth;
-  var bytes = bitDepth >> 3;
-  var length = audioData.length * audioData.numberOfChannels * bytes;
-  var dataView = new DataView(new Uint8Array(44 + length).buffer);
+  var bytes: number = bitDepth >> 3;
+  var length: number = audioData.length * audioData.numberOfChannels * bytes;
+  var dataView: DataView<ArrayBuffer> = new DataView(new Uint8Array(44 + length).buffer);
   var writer: ReturnType<typeof createWriter> = createWriter(dataView);
 
   var format: Format = {
@@ -50,7 +50,7 @@ export function encodeSync(_audioData: AudioData, opts?: Options): ArrayBuffer {
 
   writeHeader(writer, format, dataView.buffer.byteLength - 8);
 
-  var err = writeData(writer, format, length, audioData, opts);
+  var err: TypeError | undefined = writeData(writer, format, length, audioData, opts);
 
   if (err instanceof Error) {
     throw err;
@@ -60,7 +60,7 @@ export function encodeSync(_audioData: AudioData, opts?: Options): ArrayBuffer {
 }
 
 export function encode(audioData: AudioData, opts?: Options): Promise<ArrayBuffer> {
-  return new Promise(function(resolve) {
+  return new Promise<ArrayBuffer>(function(resolve) {
     resolve(encodeSync(audioData, opts));
   });
 }
@@ -87,7 +87,7 @@ function toAudioData(data: AudioData): Required<AudioData> | null {
 }
 
 function writeHeader(writer: ReturnType<typeof createWriter>, format: Format, length: number): void {
-  var bytes = format.bitDepth >> 3;
+  var bytes: number = format.bitDepth >> 3;
 
   writer.string("RIFF");
   writer.uint32(length);
@@ -104,7 +104,7 @@ function writeHeader(writer: ReturnType<typeof createWriter>, format: Format, le
 }
 
 function writeData(writer: ReturnType<typeof createWriter>, format: Format, length: number, audioData: Required<AudioData>, opts: Options): TypeError | undefined {
-  var bitDepth = format.bitDepth;
+  var bitDepth: BitDepth = format.bitDepth;
   var encoderOption: "" | "f" | "s" = format.floatingPoint ? "f" : opts.symmetric ? "s" : "";
   var methodName: WriterMethod = `pcm${bitDepth}${encoderOption}` as WriterMethod;
 
@@ -113,107 +113,107 @@ function writeData(writer: ReturnType<typeof createWriter>, format: Format, leng
   }
 
   var write: (value: number) => void = writer[methodName].bind(writer);
-  var numberOfChannels = format.numberOfChannels;
-  var channelData = audioData.channelData;
+  var numberOfChannels: number = format.numberOfChannels;
+  var channelData: Float32Array[] = audioData.channelData;
 
   writer.string("data");
   writer.uint32(length);
 
-  for (var i = 0, imax = audioData.length; i < imax; i++) {
-    for (var ch = 0; ch < numberOfChannels; ch++) {
+  for (var i: number = 0, imax = audioData.length; i < imax; i++) {
+    for (var ch: number = 0; ch < numberOfChannels; ch++) {
       write(channelData[ch]![i]!);
     }
   }
 }
 
 function createWriter(dataView: DataView<ArrayBuffer>) {
-  var pos = 0;
+  var pos: number = 0;
 
   return {
-    int16: function(value: number) {
+    int16: function(value: number): void {
       dataView.setInt16(pos, value, true);
       pos += 2;
     },
-    uint16: function(value: number) {
+    uint16: function(value: number): void {
       dataView.setUint16(pos, value, true);
       pos += 2;
     },
-    uint32: function(value: number) {
+    uint32: function(value: number): void {
       dataView.setUint32(pos, value, true);
       pos += 4;
     },
-    string: function(value: string) {
-      for (var i = 0, imax = value.length; i < imax; i++) {
+    string: function(value: string): void {
+      for (var i: number = 0, imax = value.length; i < imax; i++) {
         dataView.setUint8(pos++, value.charCodeAt(i));
       }
     },
-    pcm8: function(value: number) {
+    pcm8: function(value: number): void {
       value = Math.max(-1, Math.min(value, +1));
       value = (value * 0.5 + 0.5) * 255;
       value = Math.round(value)|0;
       dataView.setUint8(pos, value);
       pos += 1;
     },
-    pcm8s: function(value: number) {
+    pcm8s: function(value: number): void {
       value = Math.round(value * 128) + 128;
       value = Math.max(0, Math.min(value, 255));
       dataView.setUint8(pos, value);
       pos += 1;
     },
-    pcm16: function(value: number) {
+    pcm16: function(value: number): void {
       value = Math.max(-1, Math.min(value, +1));
       value = value < 0 ? value * 32768 : value * 32767;
       value = Math.round(value)|0;
       dataView.setInt16(pos, value, true);
       pos += 2;
     },
-    pcm16s: function(value: number) {
+    pcm16s: function(value: number): void {
       value = Math.round(value * 32768);
       value = Math.max(-32768, Math.min(value, 32767));
       dataView.setInt16(pos, value, true);
       pos += 2;
     },
-    pcm24: function(value: number) {
+    pcm24: function(value: number): void {
       value = Math.max(-1, Math.min(value, +1));
       value = value < 0 ? 0x1000000 + value * 8388608 : value * 8388607;
       value = Math.round(value)|0;
 
-      var x0 = (value >>  0) & 0xFF;
-      var x1 = (value >>  8) & 0xFF;
-      var x2 = (value >> 16) & 0xFF;
+      var x0: number = (value >>  0) & 0xFF;
+      var x1: number = (value >>  8) & 0xFF;
+      var x2: number = (value >> 16) & 0xFF;
 
       dataView.setUint8(pos + 0, x0);
       dataView.setUint8(pos + 1, x1);
       dataView.setUint8(pos + 2, x2);
       pos += 3;
     },
-    pcm24s: function(value: number) {
+    pcm24s: function(value: number): void {
       value = Math.round(value * 8388608);
       value = Math.max(-8388608, Math.min(value, 8388607));
 
-      var x0 = (value >>  0) & 0xFF;
-      var x1 = (value >>  8) & 0xFF;
-      var x2 = (value >> 16) & 0xFF;
+      var x0: number = (value >>  0) & 0xFF;
+      var x1: number = (value >>  8) & 0xFF;
+      var x2: number = (value >> 16) & 0xFF;
 
       dataView.setUint8(pos + 0, x0);
       dataView.setUint8(pos + 1, x1);
       dataView.setUint8(pos + 2, x2);
       pos += 3;
     },
-    pcm32: function(value: number) {
+    pcm32: function(value: number): void {
       value = Math.max(-1, Math.min(value, +1));
       value = value < 0 ? value * 2147483648 : value * 2147483647;
       value = Math.round(value)|0;
       dataView.setInt32(pos, value, true);
       pos += 4;
     },
-    pcm32s: function(value: number) {
+    pcm32s: function(value: number): void {
       value = Math.round(value * 2147483648);
       value = Math.max(-2147483648, Math.min(value, +2147483647));
       dataView.setInt32(pos, value, true);
       pos += 4;
     },
-    pcm32f: function(value: number) {
+    pcm32f: function(value: number): void {
       dataView.setFloat32(pos, value, true);
       pos += 4;
     }
