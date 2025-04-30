@@ -1,6 +1,6 @@
 import * as assert from "assert";
 import { describe, it } from "node:test";
-import * as encoder from "..";
+import * as encoder from "../src/index.js";
 
 const testSpec = [
   {

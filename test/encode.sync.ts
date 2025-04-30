@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as assert from "assert";
 import { describe, it } from "node:test";
-import * as encoder from "..";
+import * as encoder from "../src/index.js";
 
 const testSpec = [
   { opts: { bitDepth:  8 }, filename: "amen_pcm8.wav" },
