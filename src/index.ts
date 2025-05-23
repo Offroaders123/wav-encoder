@@ -1,8 +1,8 @@
 export interface AudioData {
-  numberOfChannels?: number;
-  length?: number;
-  sampleRate: number;
-  channelData: Float32Array[];
+  readonly numberOfChannels?: number;
+  readonly length?: number;
+  readonly sampleRate: number;
+  readonly channelData: Float32Array[];
 }
 
 export interface Options {
@@ -13,11 +13,11 @@ export interface Options {
 }
 
 export interface Format {
-  formatId: number;
-  floatingPoint: boolean;
-  numberOfChannels: number;
-  sampleRate: number;
-  bitDepth: BitDepth;
+  readonly formatId: number;
+  readonly floatingPoint: boolean;
+  readonly numberOfChannels: number;
+  readonly sampleRate: number;
+  readonly bitDepth: BitDepth;
 }
 
 export type BitDepth = 8 | 16 | 24 | 32;
@@ -60,8 +60,6 @@ export function encodeSync(_audioData: AudioData, opts?: Options): ArrayBuffer {
 }
 
 function toAudioData(data: AudioData): Required<AudioData> | null {
-  const audioData: Required<AudioData> = {} as Required<AudioData>;
-
   if (typeof data.sampleRate !== "number") {
     return null;
   }
@@ -72,12 +70,12 @@ function toAudioData(data: AudioData): Required<AudioData> | null {
     return null;
   }
 
-  audioData.numberOfChannels = data.channelData.length;
-  audioData.length = data.channelData[0].length|0;
-  audioData.sampleRate = data.sampleRate|0;
-  audioData.channelData = data.channelData;
-
-  return audioData;
+  return {
+    numberOfChannels: data.channelData.length,
+    length: data.channelData[0].length|0,
+    sampleRate: data.sampleRate|0,
+    channelData: data.channelData
+  };
 }
 
 function writeHeader(writer: Writer, format: Format, length: number): void {
