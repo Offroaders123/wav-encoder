@@ -48,7 +48,7 @@ const testSpec = [
 ];
 
 describe("encoding", () => {
-  testSpec.forEach(({ opts, TypedArray, data, expected }) => {
+  for (const { opts, TypedArray, data, expected } of testSpec) {
     it(JSON.stringify(opts), () => {
       const audioData: AudioData = {
         channelData: [ new Float32Array(data) ], sampleRate: 8000,
@@ -58,5 +58,5 @@ describe("encoding", () => {
 
       deepEqual(actual, expected);
     });
-  });
+  }
 });

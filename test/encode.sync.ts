@@ -40,12 +40,12 @@ function readAudioData(filename: string): AudioData {
 describe("encode.sync(audioData, opts)", () => {
   const audioData: AudioData = readAudioData("amen.dat");
 
-  testSpec.forEach(({ opts, filename }) => {
+  for (const { opts, filename } of testSpec) {
     it(filename, () => {
       const expected: Uint8Array<ArrayBuffer> = new Uint8Array(readFile(filename));
       const actual: Uint8Array<ArrayBuffer> = new Uint8Array(encodeSync(audioData, opts));
 
       deepEqual(actual, expected);
     });
-  });
+  }
 });
