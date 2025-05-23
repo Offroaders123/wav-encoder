@@ -27,20 +27,20 @@ export type WriterMethod = keyof Writer extends infer T ? T extends `pcm${BitDep
 export function encodeSync(_audioData: AudioData, opts?: Options): ArrayBuffer {
   opts = opts || {};
 
-  var audioData: Required<AudioData> | null = toAudioData(_audioData);
+  const audioData: Required<AudioData> | null = toAudioData(_audioData);
 
   if (audioData === null) {
     throw new TypeError("Invalid AudioData");
   }
 
-  var floatingPoint: boolean = !!(opts.floatingPoint || opts.float);
-  var bitDepth: BitDepth = floatingPoint ? 32 : ((opts.bitDepth as typeof NaN|0) || 16) as BitDepth;
-  var bytes: number = bitDepth >> 3;
-  var length: number = audioData.length * audioData.numberOfChannels * bytes;
-  var dataView: DataView<ArrayBuffer> = new DataView(new Uint8Array(44 + length).buffer);
-  var writer: Writer = new Writer(dataView);
+  const floatingPoint: boolean = !!(opts.floatingPoint || opts.float);
+  const bitDepth: BitDepth = floatingPoint ? 32 : ((opts.bitDepth as typeof NaN|0) || 16) as BitDepth;
+  const bytes: number = bitDepth >> 3;
+  const length: number = audioData.length * audioData.numberOfChannels * bytes;
+  const dataView: DataView<ArrayBuffer> = new DataView(new Uint8Array(44 + length).buffer);
+  const writer: Writer = new Writer(dataView);
 
-  var format: Format = {
+  const format: Format = {
     formatId: floatingPoint ? 0x0003 : 0x0001,
     floatingPoint: floatingPoint,
     numberOfChannels: audioData.numberOfChannels,
@@ -50,7 +50,7 @@ export function encodeSync(_audioData: AudioData, opts?: Options): ArrayBuffer {
 
   writeHeader(writer, format, dataView.buffer.byteLength - 8);
 
-  var err: TypeError | undefined = writeData(writer, format, length, audioData, opts);
+  const err: TypeError | undefined = writeData(writer, format, length, audioData, opts);
 
   if (err instanceof Error) {
     throw err;
@@ -60,7 +60,7 @@ export function encodeSync(_audioData: AudioData, opts?: Options): ArrayBuffer {
 }
 
 function toAudioData(data: AudioData): Required<AudioData> | null {
-  var audioData: Required<AudioData> = {} as Required<AudioData>;
+  const audioData: Required<AudioData> = {} as Required<AudioData>;
 
   if (typeof data.sampleRate !== "number") {
     return null;
@@ -81,7 +81,7 @@ function toAudioData(data: AudioData): Required<AudioData> | null {
 }
 
 function writeHeader(writer: Writer, format: Format, length: number): void {
-  var bytes: number = format.bitDepth >> 3;
+  const bytes: number = format.bitDepth >> 3;
 
   writer.string("RIFF");
   writer.uint32(length);
@@ -98,23 +98,23 @@ function writeHeader(writer: Writer, format: Format, length: number): void {
 }
 
 function writeData(writer: Writer, format: Format, length: number, audioData: Required<AudioData>, opts: Options): TypeError | undefined {
-  var bitDepth: BitDepth = format.bitDepth;
-  var encoderOption: "" | "f" | "s" = format.floatingPoint ? "f" : opts.symmetric ? "s" : "";
-  var methodName: WriterMethod = `pcm${bitDepth}${encoderOption}` as WriterMethod;
+  const bitDepth: BitDepth = format.bitDepth;
+  const encoderOption: "" | "f" | "s" = format.floatingPoint ? "f" : opts.symmetric ? "s" : "";
+  const methodName: WriterMethod = `pcm${bitDepth}${encoderOption}` as WriterMethod;
 
   if (!writer[methodName]) {
     return new TypeError("Not supported bit depth: " + bitDepth);
   }
 
-  var write: (value: number) => void = writer[methodName].bind(writer);
-  var numberOfChannels: number = format.numberOfChannels;
-  var channelData: Float32Array[] = audioData.channelData;
+  const write: (value: number) => void = writer[methodName].bind(writer);
+  const numberOfChannels: number = format.numberOfChannels;
+  const channelData: Float32Array[] = audioData.channelData;
 
   writer.string("data");
   writer.uint32(length);
 
-  for (var i: number = 0, imax = audioData.length; i < imax; i++) {
-    for (var ch: number = 0; ch < numberOfChannels; ch++) {
+  for (let i: number = 0, imax = audioData.length; i < imax; i++) {
+    for (let ch: number = 0; ch < numberOfChannels; ch++) {
       write(channelData[ch]![i]!);
     }
   }
@@ -144,7 +144,7 @@ class Writer {
   }
 
   string(value: string): void {
-    for (var i: number = 0, imax = value.length; i < imax; i++) {
+    for (let i: number = 0, imax = value.length; i < imax; i++) {
       this.#dataView.setUint8(this.#pos++, value.charCodeAt(i));
     }
   }
@@ -184,9 +184,9 @@ class Writer {
     value = value < 0 ? 0x1000000 + value * 8388608 : value * 8388607;
     value = Math.round(value)|0;
 
-    var x0: number = (value >>  0) & 0xFF;
-    var x1: number = (value >>  8) & 0xFF;
-    var x2: number = (value >> 16) & 0xFF;
+    const x0: number = (value >>  0) & 0xFF;
+    const x1: number = (value >>  8) & 0xFF;
+    const x2: number = (value >> 16) & 0xFF;
 
     this.#dataView.setUint8(this.#pos + 0, x0);
     this.#dataView.setUint8(this.#pos + 1, x1);
@@ -198,9 +198,9 @@ class Writer {
     value = Math.round(value * 8388608);
     value = Math.max(-8388608, Math.min(value, 8388607));
 
-    var x0: number = (value >>  0) & 0xFF;
-    var x1: number = (value >>  8) & 0xFF;
-    var x2: number = (value >> 16) & 0xFF;
+    const x0: number = (value >>  0) & 0xFF;
+    const x1: number = (value >>  8) & 0xFF;
+    const x2: number = (value >> 16) & 0xFF;
 
     this.#dataView.setUint8(this.#pos + 0, x0);
     this.#dataView.setUint8(this.#pos + 1, x1);
